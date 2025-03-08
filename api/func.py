@@ -41,19 +41,22 @@ model1 = SentenceTransformer("all-MiniLM-L6-v2")
 # Load the chunked data
 df = pd.read_csv("datasets/chunked_data.csv")
 
+data0 = pd.read_csv("datasets/asanas.csv")
+dataset0 = pd.DataFrame(data1)
+keywords0 = dataset0["Heading"].tolist()
 
 # Function to search for relevant chunks
-def search_chunks(query, top_k=5):
+def search_chunks(query):
     query_embedding = model1.encode([query])
-    distances, indices = index.search(
-        np.array(query_embedding).astype("float32"), top_k
-    )
-    results = df.iloc[indices[0]]
-    if not results.empty:
-        for _, row in results.iterrows():
-            return row["text"]
-    else:
-        return "No results found"
+    keyword_embeddings = model.encode(keywords1, convert_to_tensor=True)
+    similarities = util.pytorch_cos_sim(input_embedding, keyword_embeddings)
+    best_match_index = similarities.argmax().item()
+    best_match = keywords0[best_match_index]
+    content = dataset["Content"][best_match_index]
+    return content
+
+
+    
 
 
 data1 = pd.read_csv("datasets/asanas.csv")
@@ -137,3 +140,6 @@ def get_ocr(request):
     Precautions = dataset3["Precaution/ Contraindication"][best_match_index]
 
     return recognized_medicines, Indications, Dose, Precautions
+
+
+

@@ -27,7 +27,7 @@ async def get_query(request):
     query = request.args.get("query")
     if not query:
         return json({"error": "Medicine name is required"}, status=400)
-    description = search_chunks(query, 5)
+    description = search_chunks(query)
     return json({"error": None, "description": description}, status=200)
 
 
