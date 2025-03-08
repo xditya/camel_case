@@ -59,7 +59,7 @@ keywords1 = dataset1["Problems Solved"].tolist()
 
 def get_asanas(input_text):
     input_embedding = model.encode(input_text, convert_to_tensor=True)
-    keyword_embeddings = model.encode(keywords, convert_to_tensor=True)
+    keyword_embeddings = model.encode(keywords1, convert_to_tensor=True)
 
     similarities = util.pytorch_cos_sim(input_embedding, keyword_embeddings)
 
@@ -72,3 +72,24 @@ def get_asanas(input_text):
     Level = dataset1["Level"][best_match_index]
 
     return best_match, asana, benefits, technique, breathing, Level
+
+
+data2 = pd.read_csv("datasets/meditation.csv")
+dataset2 = pd.DataFrame(data2)
+keywords2 = dataset2["Issue"].tolist()
+
+def get_meditation(input_text):
+    input_embedding = model.encode(input_text, convert_to_tensor=True)
+    keyword_embeddings = model.encode(keywords2, convert_to_tensor=True)
+
+    similarities = util.pytorch_cos_sim(input_embedding, keyword_embeddings)
+
+    best_match_index = similarities.argmax().item()
+    best_match = keywords[best_match_index]
+    Meditate = dataset2["Name"][best_match_index]
+    Description = dataset2["Description"][best_match_index]
+    Duration = dataset2["Duration"][best_match_index]
+    Instructions = dataset2["Instructuctions"][best_match_index]
+
+    return best_match, Meditate, Description, Duration, Instructions
+    
