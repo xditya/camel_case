@@ -1,6 +1,8 @@
 import warnings
 from sentence_transformers import SentenceTransformer, util
 import pandas as pd
+import faiss
+import numpy as np
 
 # Suppress the specific FutureWarning
 warnings.filterwarnings(
@@ -28,3 +30,18 @@ def get_best_match(input_text):
     medicine = dataset["Name of Medicine"][best_match_index]
 
     return best_match, medicine
+
+index = faiss.read_index('faiss_index.index')
+model1 = SentenceTransformer('all-MiniLM-L6-v2')
+# Load the chunked data
+df = pd.read_csv('chunked_data.csv')
+
+# Function to search for relevant chunks
+def search_chunks(query, top_k=5):
+    query_embedding = model1.encode([query])
+    distances, indices = index.search(np.array(query_embedding).astype('float32'), top_k)
+    results = df.iloc[indices[0]]
+    if not results.empty:
+    
+        for _, row in results.iterrows():
+       return(row['text'])
