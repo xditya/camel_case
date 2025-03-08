@@ -20,7 +20,7 @@ Cover Image If applicable
 | Name            | Role      | GitHub                                             | LinkedIn                                                     |
 | --------------- | --------- | -------------------------------------------------- | ------------------------------------------------------------ |
 | Aditya S        | Developer | [@xditya](https://github.com/xditya)               | [Profile](https://linkedin.com/in/xditya)                    |
-| Akshay Ashok    | Developer | [@username](https://github.com/username)           | [Profile](https://linkedin.com/in/akshay-ashok-26844224a)    |
+| Akshay Ashok    | Developer | [@aks-hayy](https://github.com/aks-hayy)           | [Profile](https://linkedin.com/in/akshay-ashok-26844224a)    |
 | Ann S Binil     | Developer | [@annsbinil](https://github.com/annsbinil)         | [Profile](https://linkedin.com/in/annsbinil)                 |
 | Anoushka L Nair | Developer | [@anoushkalnair](https://github.com/anoushkalnair) | [Profile](https://linkedin.com/in/anoushka-l-nair-331b73239) |
 
