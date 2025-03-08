@@ -43,7 +43,13 @@ export default function Start() {
       <main className="max-w-2xl mx-auto px-4 py-16 relative z-10">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <Image src="/name.png" alt="AyuVritt" width={200} height={200} />
+          <Image
+            src="/name.png"
+            alt="AyuVritt"
+            width={200}
+            height={200}
+            onClick={() => (window.location.href = "/")}
+          />
         </div>
 
         {/* Form */}

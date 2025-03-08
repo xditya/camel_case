@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { Leaf1, Leaf2, Leaf3, SmallLeaf } from "@/components/leaves";
 
@@ -49,7 +51,13 @@ export default function LearnMore() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
         {/* Header Section */}
         <div className="flex justify-center mb-5">
-          <Image src="/name.png" alt="AyuVritt" width={250} height={250} />
+          <Image
+            src="/name.png"
+            alt="AyuVritt"
+            width={250}
+            height={250}
+            onClick={() => (window.location.href = "/")}
+          />
         </div>
         <div className="text-center mb-16">
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
@@ -282,7 +290,12 @@ export default function LearnMore() {
               Join us in revolutionizing healthcare by combining the best of
               both worlds.
             </p>
-            <button className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+            <button
+              onClick={() => {
+                window.location.href = "/start";
+              }}
+              className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+            >
               Start Your Journey
             </button>
           </div>
