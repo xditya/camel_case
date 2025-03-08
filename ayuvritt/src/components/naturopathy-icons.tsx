@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 export function RoutineIcon() {
   return (
     <svg
@@ -63,6 +65,60 @@ export function PlantIcon(props: React.SVGProps<SVGSVGElement>) {
       {/* Lower leaves */}
       <path d="M12 10s-2-2-2 0 2 2 2 0" />
       <path d="M12 10s2-2 2 0-2 2-2 0" />
+    </svg>
+  );
+}
+
+export function GrowingTreeIcon({
+  progress = 0,
+  ...props
+}: React.SVGProps<SVGSVGElement> & { progress?: number }) {
+  const branchProgress = Math.max(0, (progress - 0.3) * 1.5); // Branches start after 30% stem growth
+
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      {/* Pot */}
+      <path d="M8 20h8" />
+      <path d="M8 20l-1-3h10l-1 3" />
+
+      {/* Main stem */}
+      <motion.path
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: progress }}
+        transition={{ duration: 0.5 }}
+        d="M12 17V7"
+      />
+
+      {/* Branches and Leaves */}
+      <motion.g
+        initial={{ opacity: 0 }}
+        animate={{ opacity: branchProgress }}
+        transition={{ duration: 0.3 }}
+      >
+        {/* Lower branches */}
+        <path d="M12 15l-2-1.5" />
+        <path d="M12 15l2-1.5" />
+
+        {/* Middle branches */}
+        <path d="M12 12l-3-2" />
+        <path d="M12 12l3-2" />
+
+        {/* Upper branches */}
+        <path d="M12 9l-2-1.5" />
+        <path d="M12 9l2-1.5" />
+
+        {/* Top */}
+        <path d="M12 7l-1-1" />
+        <path d="M12 7l1-1" />
+      </motion.g>
     </svg>
   );
 }
