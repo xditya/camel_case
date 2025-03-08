@@ -1,11 +1,16 @@
+import warnings
 from sentence_transformers import SentenceTransformer, util
 import pandas as pd
 
-
-
+# Suppress the specific FutureWarning
+warnings.filterwarnings(
+    "ignore",
+    category=FutureWarning,
+    message="`clean_up_tokenization_spaces` was not set",
+)
 
 model = SentenceTransformer("paraphrase-MiniLM-L6-v2")
-data = pd.read_csv("datasets//sanskrit_translated_output_1.csv")
+data = pd.read_csv("datasets/sanskrit_translated_output_1.csv")
 dataset = pd.DataFrame(data)
 
 keywords = dataset["English_Text"].tolist()
@@ -20,7 +25,6 @@ def get_best_match(input_text):
 
     best_match_index = similarities.argmax().item()
     best_match = keywords[best_match_index]
-    best_score = similarities[0, best_match_index].item()
     medicine = dataset["Name of Medicine"][best_match_index]
 
     return best_match, medicine

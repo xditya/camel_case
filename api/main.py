@@ -15,7 +15,7 @@ async def get_medicine(request):
     symptoms = request.args.get("symptoms")
     if not symptoms:
         return json({"error": "Symptoms are required"}, status=400)
-   disease, medicine = get_best_match(symptoms)
+    disease, medicine = get_best_match(symptoms)
     return json({"error": None, "medicine": medicine, "disease": disease}, status=200)
 
 

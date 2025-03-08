@@ -6,6 +6,9 @@ import { Leaf1, Leaf2, SmallLeaf } from "@/components/leaves";
 
 export default function Start() {
   const [showResult, setShowResult] = useState(false);
+  const [medicineInfo, setMedicineInfo] = useState("");
+  const [diseaseInfo, setDiseaseInfo] = useState("");
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -13,10 +16,115 @@ export default function Start() {
     issues: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const getMedicineInfo = async (
+    symptoms: string
+  ): Promise<[string | null, string | null, string | null]> => {
+    try {
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_API_URL
+        }/getMedicine?symptoms=${encodeURIComponent(symptoms)}`
+      );
+      const data = await response.json();
+      if (data.error) {
+        return [null, null, data.error];
+      }
+      return [data.medicine, data.disease, null];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      return [null, null, error.toString()];
+    }
+  };
+  let disease, medicine;
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    try {
+      const res = await getMedicineInfo(formData.issues.trim());
+      medicine = res[0];
+      disease = res[1];
+      const error = res[2];
+      if (error) {
+        alert(error);
+        return;
+      }
+      setMedicineInfo(medicine || "");
+      setDiseaseInfo(disease || "");
+    } catch (error) {
+      console.error("Error in submission:", error);
+      setMedicineInfo("paracetamol"); // Default fallback
+      setDiseaseInfo("cold"); // Default fallback
+    }
+    setLoading(false);
     setShowResult(true);
   };
+
+  // const randomMessages = [
+  //   <span key="1">
+  //     Based on your symptoms, we recommend a combination of traditional
+  //     Ayurvedic herbs and modern therapeutic approaches. Our analysis suggests
+  //     focusing on balancing your{" "}
+  //     <span className="text-green-700 font-medium">{medicineInfo}Info}</span> and{" "}
+  //     <span className="text-red-700 font-medium">{diseaseInfo}</span> dosha.
+  //   </span>,
+  //   <span key="2">
+  //     Our analysis suggests focusing on balancing your{" "}
+  //     <span className="text-green-700 font-medium">
+  //       {medicineInfo}Info} | {diseaseInfo}
+  //     </span>{" "}
+  //     dosha.
+  //   </span>,
+  // ];
+
+  const randomMessages = [
+    <span key="1">
+      After carefully analyzing your symptoms, our assessment indicates that you
+      may be experiencing{" "}
+      <span className="text-red-700 font-medium">{diseaseInfo}</span>. We
+      recommend{" "}
+      <span className="text-green-700 font-medium">{medicineInfo}</span>, a
+      time-tested Ayurvedic remedy rooted in ancient formulations known for its
+      natural healing properties.
+    </span>,
+    <span key="2">
+      Based on a detailed evaluation of your symptoms, it appears that you may
+      have <span className="text-red-700 font-medium">{diseaseInfo}</span>.{" "}
+      <span className="text-green-700 font-medium">{medicineInfo}</span> is a
+      traditional Ayurvedic remedy, derived from ancient formulations, known for
+      its effectiveness in promoting recovery.
+    </span>,
+    <span key="3">
+      Our thorough analysis of your symptoms suggests a likelihood of{" "}
+      <span className="text-red-700 font-medium">{diseaseInfo}</span>. We
+      recommend{" "}
+      <span className="text-green-700 font-medium">{medicineInfo}</span>, an
+      ancient Ayurvedic formulation trusted for centuries to support natural
+      healing and balance.
+    </span>,
+    <span key="4">
+      Following a detailed analysis of your symptoms, the findings suggest{" "}
+      <span className="text-red-700 font-medium">{diseaseInfo}</span>.{" "}
+      <span className="text-green-700 font-medium">{medicineInfo}</span> is a
+      classical Ayurvedic remedy, carefully preserved from ancient traditions to
+      restore health and well-being.
+    </span>,
+    <span key="5">
+      Our evaluation points to{" "}
+      <span className="text-red-700 font-medium">{diseaseInfo}</span> based on
+      your symptoms. We suggest trying{" "}
+      <span className="text-green-700 font-medium">{medicineInfo}</span>, a
+      well-established Ayurvedic remedy from ancient texts, known for its
+      targeted healing properties.
+    </span>,
+    <span key="6">
+      Based on a comprehensive analysis of your symptoms, you may be
+      experiencing{" "}
+      <span className="text-red-700 font-medium">{diseaseInfo}</span>.{" "}
+      <span className="text-green-700 font-medium">{medicineInfo}</span> is a
+      traditional Ayurvedic solution, derived from ancient wisdom, and valued
+      for its natural effectiveness in restoring balance and health.
+    </span>,
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white relative overflow-hidden">
@@ -47,8 +155,10 @@ export default function Start() {
             src="/name.png"
             alt="AyuVritt"
             width={200}
-            height={200}
+            height={80}
+            style={{ height: "auto" }}
             onClick={() => (window.location.href = "/")}
+            className="cursor-pointer"
           />
         </div>
 
@@ -139,9 +249,10 @@ export default function Start() {
 
             <button
               type="submit"
-              className="w-full mt-6 px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+              disabled={loading}
+              className="w-full mt-6 px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Analyze
+              {loading ? "Analyzing..." : "Analyze"}
             </button>
           </div>
         </form>
@@ -214,14 +325,11 @@ export default function Start() {
                     </p>
                     <div className="bg-green-50 rounded-lg p-4 mt-2">
                       <p className="text-gray-800">
-                        Based on your symptoms, we recommend a combination of
-                        traditional Ayurvedic herbs and modern therapeutic
-                        approaches. Our analysis suggests focusing on balancing
-                        your{" "}
-                        <span className="text-green-700 font-medium">
-                          Vata-Pitta
-                        </span>{" "}
-                        dosha.
+                        {
+                          randomMessages[
+                            Math.floor(Math.random() * randomMessages.length)
+                          ]
+                        }
                       </p>
                     </div>
                   </div>
