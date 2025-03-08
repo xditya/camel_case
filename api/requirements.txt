@@ -3,5 +3,5 @@ pandas
 sentence-transformers
 sanic-cors
 faiss-cpu
-cv2
+opencv-python
 easyocr

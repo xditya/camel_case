@@ -8,12 +8,12 @@ The official template repository for Define 3.0
 
 > _AI driven bridging gap between ancient wisdom and modern healing._
 
-Cover Image If applicable
+![Cover Image](./ayuvritt/public/icon.svg)
 
 ### Team Information
 
-- **Team Name**: <Team Name>
-- **Track**: < Track >
+- **Team Name**: camel_case
+- **Track**: AI in AYUSH
 
 ### Team Members
 
@@ -36,7 +36,7 @@ _We require a system to generate medicinal knowledge and ayurvedic insights rela
 
 ### Solution
 
-_Explain your approach to solving the problem_
+_We intend to build a interface for herbal formulation insights alongside of allopathy analysing and researching on basis of sustainable medicinal development._
 
 ### Demo
 
@@ -53,7 +53,6 @@ _Replace VIDEO_ID with your YouTube video ID or provide an alternative demo link
 
 - **Frontend**: Next.js
 - **Backend**: Node.js
-- **Database**: MongoDB
 - **Other Tools**: Pretrained models (Bert, Kaggle)
 
 ### Key Features
@@ -66,20 +65,33 @@ _Replace VIDEO_ID with your YouTube video ID or provide an alternative demo link
 
 ### Prerequisites
 
-- Requirement 1
-- Requirement 2
-- Requirement 3
+- Python 3.10
+- Node.js
 
 ### Installation
 
-```bash
+### Clone
 
+```bash
+git clone https://github.com/xditya/camel_case
+cd camel_case
 ```
 
-### Running the Project
+#### Backend
 
 ```bash
+cd api
+pip install -r requirements.txt
+python main.py
+```
 
+#### Frontend
+
+```bash
+cd ..
+cd ayuvritt
+npm install
+npm run dev
 ```
 
 ## Additional Resources
@@ -90,7 +102,7 @@ _Brief overview of your development process and milestones_
 
 ### Challenges Faced
 
-_Discuss technical challenges and how you overcame them_
+_Sleep deprivation_
 
 ### Future Enhancements
 
@@ -105,12 +117,12 @@ _Share your vision for future development_
 
 ### Submission Checklist
 
-- [ ] Cover Image
+- [x] Cover Image
 - [ ] Completed all sections of this README
 - [ ] Added project demo video
 - [ ] Provided live project link
 - [x] Ensured all team members are listed
-- [ ] Included setup instructions
+- [x] Included setup instructions
 - [ ] Submitted final code to repository
 
 ---
