@@ -1,8 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Leaf1, Leaf2, SmallLeaf } from "@/components/leaves";
+
+interface LocationResult {
+  display_name: string;
+  place_id: number;
+}
 
 export default function Start() {
   const [showResult, setShowResult] = useState(false);
@@ -15,6 +20,21 @@ export default function Start() {
     location: "",
     issues: "",
   });
+  const [loadingLocation, setLoadingLocation] = useState(false);
+  const [locationError, setLocationError] = useState("");
+  const [searchResults, setSearchResults] = useState<LocationResult[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!(event.target as HTMLElement).closest("#location")) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const getMedicineInfo = async (
     symptoms: string
@@ -46,6 +66,7 @@ export default function Start() {
       const error = res[2];
       if (error) {
         alert(error);
+        setLoading(false);
         return;
       }
       setMedicineInfo(medicine || "");
@@ -59,22 +80,64 @@ export default function Start() {
     setShowResult(true);
   };
 
-  // const randomMessages = [
-  //   <span key="1">
-  //     Based on your symptoms, we recommend a combination of traditional
-  //     Ayurvedic herbs and modern therapeutic approaches. Our analysis suggests
-  //     focusing on balancing your{" "}
-  //     <span className="text-green-700 font-medium">{medicineInfo}Info}</span> and{" "}
-  //     <span className="text-red-700 font-medium">{diseaseInfo}</span> dosha.
-  //   </span>,
-  //   <span key="2">
-  //     Our analysis suggests focusing on balancing your{" "}
-  //     <span className="text-green-700 font-medium">
-  //       {medicineInfo}Info} | {diseaseInfo}
-  //     </span>{" "}
-  //     dosha.
-  //   </span>,
-  // ];
+  const getCurrentLocation = () => {
+    setLoadingLocation(true);
+    setLocationError("");
+
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by your browser");
+      setLoadingLocation(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}`
+          );
+          const data = await response.json();
+
+          const address = data.display_name;
+          setFormData((prev) => ({
+            ...prev,
+            location: address,
+          }));
+        } catch (error) {
+          setLocationError("Failed to get location details" + error);
+        }
+        setLoadingLocation(false);
+      },
+      (error) => {
+        setLocationError(
+          error.code === 1
+            ? "Please allow location access"
+            : "Unable to get your location"
+        );
+        setLoadingLocation(false);
+      }
+    );
+  };
+
+  const searchLocation = async (query: string) => {
+    if (query.length < 3) {
+      setSearchResults([]);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          query
+        )}&limit=5`
+      );
+      const data = await response.json();
+      setSearchResults(data);
+      setShowSuggestions(true);
+    } catch (error) {
+      console.error("Search error:", error);
+    }
+  };
 
   const randomMessages = [
     <span key="1">
@@ -215,16 +278,110 @@ export default function Start() {
                 >
                   Location
                 </label>
-                <input
-                  type="text"
-                  id="location"
-                  value={formData.location}
-                  onChange={(e) =>
-                    setFormData({ ...formData, location: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-black"
-                  required
-                />
+                <div className="relative">
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <input
+                        type="text"
+                        id="location"
+                        value={formData.location}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            location: e.target.value,
+                          });
+                          searchLocation(e.target.value);
+                        }}
+                        onFocus={() => {
+                          if (formData.location) {
+                            setShowSuggestions(true);
+                          }
+                        }}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-black"
+                        placeholder="Search for a location..."
+                        required
+                        autoComplete="off"
+                      />
+                      {/* Dropdown Menu */}
+                      {showSuggestions && searchResults.length > 0 && (
+                        <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto">
+                          {searchResults.map((result) => (
+                            <li
+                              key={result.place_id}
+                              className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm text-gray-700"
+                              onClick={() => {
+                                setFormData({
+                                  ...formData,
+                                  location: result.display_name,
+                                });
+                                setShowSuggestions(false);
+                              }}
+                            >
+                              {result.display_name}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                    {/* Current Location Button */}
+                    <button
+                      type="button"
+                      onClick={getCurrentLocation}
+                      disabled={loadingLocation}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 whitespace-nowrap"
+                    >
+                      {loadingLocation ? (
+                        <>
+                          <svg
+                            className="animate-spin h-5 w-5"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            />
+                          </svg>
+                          <span>Loading...</span>
+                        </>
+                      ) : (
+                        <>
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                          </svg>
+                          <span>Current</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+                {locationError && (
+                  <p className="mt-1 text-sm text-red-600">{locationError}</p>
+                )}
               </div>
 
               <div>
