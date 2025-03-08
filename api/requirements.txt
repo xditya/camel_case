@@ -2,3 +2,4 @@ sanic
 pandas
 sentence-transformers
 sanic-cors
+faiss-cpu

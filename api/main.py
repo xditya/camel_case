@@ -1,6 +1,6 @@
 from sanic import Sanic, json, redirect
 from sanic.response import text
-from func import get_best_match,get_query
+from func import get_best_match, search_chunks
 from func import get_best_match
 from sanic_cors import CORS
 
@@ -18,17 +18,16 @@ async def get_medicine(request):
     symptoms = request.args.get("symptoms")
     if not symptoms:
         return json({"error": "Symptoms are required"}, status=400)
-   disease, medicine = get_best_match(symptoms)
+    disease, medicine = get_best_match(symptoms)
     return json({"error": None, "medicine": medicine, "disease": disease}, status=200)
- 
- @app.get("/medicineSearch")   
- 
- async def get_query(request):
 
+
+@app.get("/medicineSearch")
+async def get_query(request):
     query = request.args.get("query")
     if not query:
         return json({"error": "Medicine name is required"}, status=400)
-    description = search_chunks(query,5)
+    description = search_chunks(query, 5)
     return json({"error": None, "description": description}, status=200)
 
 

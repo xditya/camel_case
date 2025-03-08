@@ -31,17 +31,22 @@ def get_best_match(input_text):
 
     return best_match, medicine
 
-index = faiss.read_index('faiss_index.index')
-model1 = SentenceTransformer('all-MiniLM-L6-v2')
+
+index = faiss.read_index("datasets/faiss_index.index")
+model1 = SentenceTransformer("all-MiniLM-L6-v2")
 # Load the chunked data
-df = pd.read_csv('chunked_data.csv')
+df = pd.read_csv("datasets/chunked_data.csv")
+
 
 # Function to search for relevant chunks
 def search_chunks(query, top_k=5):
     query_embedding = model1.encode([query])
-    distances, indices = index.search(np.array(query_embedding).astype('float32'), top_k)
+    distances, indices = index.search(
+        np.array(query_embedding).astype("float32"), top_k
+    )
     results = df.iloc[indices[0]]
     if not results.empty:
-    
         for _, row in results.iterrows():
-       return(row['text'])
+            return row["text"]
+    else:
+        return "No results found"
