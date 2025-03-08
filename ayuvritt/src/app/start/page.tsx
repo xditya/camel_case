@@ -2,11 +2,31 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Leaf1, Leaf2, SmallLeaf } from "@/components/leaves";
+import { Leaf1, Leaf2 } from "@/components/leaves";
 
 interface LocationResult {
   display_name: string;
   place_id: number;
+}
+
+interface Doctor {
+  name: string;
+  distance: number;
+  address: string;
+  type: string;
+}
+
+interface NominatimPlace {
+  display_name: string;
+  importance: number;
+  type: string;
+  lat: string;
+  lon: string;
+}
+
+interface Coordinates {
+  lat: number;
+  lon: number;
 }
 
 export default function Start() {
@@ -24,6 +44,9 @@ export default function Start() {
   const [locationError, setLocationError] = useState("");
   const [searchResults, setSearchResults] = useState<LocationResult[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loadingDoctors, setLoadingDoctors] = useState(false);
+  const [showDoctors, setShowDoctors] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -137,6 +160,123 @@ export default function Start() {
     } catch (error) {
       console.error("Search error:", error);
     }
+  };
+
+  const calculateDistance = (
+    point1: Coordinates,
+    point2: Coordinates
+  ): number => {
+    const R = 6371; // Earth's radius in km
+    const dLat = ((point2.lat - point1.lat) * Math.PI) / 180;
+    const dLon = ((point2.lon - point1.lon) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((point1.lat * Math.PI) / 180) *
+        Math.cos((point2.lat * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in km
+  };
+
+  const findNearbyDoctors = async () => {
+    setLoadingDoctors(true);
+    try {
+      const locationQuery = encodeURIComponent(formData.location);
+      const geoResponse = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${locationQuery}`
+      );
+      const geoData = await geoResponse.json();
+
+      if (geoData.length > 0) {
+        const userLocation = {
+          lat: parseFloat(geoData[0].lat),
+          lon: parseFloat(geoData[0].lon),
+        };
+
+        // Try with small radius first
+        let viewboxSize = 0.1;
+        let data = [];
+
+        // Keep expanding search radius until we find results or hit max radius
+        while (data.length === 0 && viewboxSize <= 2) {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?` +
+              `format=json&` +
+              // Modified search query to be more specific
+              `q=ayurvedic&` +
+              `viewbox=${userLocation.lon - viewboxSize},${
+                userLocation.lat - viewboxSize
+              },${userLocation.lon + viewboxSize},${
+                userLocation.lat + viewboxSize
+              }&` +
+              `bounded=1&limit=50&` + // Increased limit
+              `dedupe=1&` + // Remove duplicates
+              `category=healthcare,medical` // Added category filter
+          );
+          const responseData = await response.json();
+          data = Array.isArray(responseData) ? responseData : [];
+
+          if (data.length === 0) {
+            // Try alternative search if first attempt returns no results
+            const altResponse = await fetch(
+              `https://nominatim.openstreetmap.org/search?` +
+                `format=json&` +
+                `amenity=hospital,clinic,doctors,healthcare&` +
+                `lat=${userLocation.lat}&` +
+                `lon=${userLocation.lon}&` +
+                `radius=${viewboxSize * 111000}&` + // Convert degrees to meters (roughly)
+                `limit=50`
+            );
+            const altData = await altResponse.json();
+            data = Array.isArray(altData) ? altData : [];
+          }
+
+          viewboxSize *= 2;
+        }
+
+        const nearbyDoctors = data
+          .filter(
+            (place: NominatimPlace) =>
+              place.display_name.toLowerCase().includes("hospital") ||
+              place.display_name.toLowerCase().includes("clinic") ||
+              place.display_name.toLowerCase().includes("medical") ||
+              place.display_name.toLowerCase().includes("health") ||
+              place.type === "hospital" ||
+              place.type === "clinic"
+          )
+          .map((place: NominatimPlace) => {
+            const distance = calculateDistance(userLocation, {
+              lat: parseFloat(place.lat),
+              lon: parseFloat(place.lon),
+            });
+            return {
+              name: place.display_name.split(",")[0],
+              distance: Math.round(distance * 10) / 10,
+              address: place.display_name,
+              type: place.type || "Healthcare Facility",
+            };
+          })
+          .sort((a: Doctor, b: Doctor) => a.distance - b.distance)
+          .slice(0, 5);
+
+        setDoctors(nearbyDoctors);
+        setShowDoctors(true);
+      }
+    } catch (error) {
+      console.error("Error finding doctors:", error);
+    }
+    setLoadingDoctors(false);
+  };
+
+  const openInGoogleMaps = (address: string) => {
+    // Encode the destination address for the URL
+    const destination = encodeURIComponent(address);
+    // Open Google Maps in a new tab with directions
+    window.open(
+      `https://www.google.com/maps/dir/?api=1&destination=${destination}`,
+      "_blank"
+    );
   };
 
   const randomMessages = [
@@ -416,90 +556,224 @@ export default function Start() {
 
         {/* Result Popup */}
         {showResult && (
-          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg max-w-lg w-full relative">
-              {/* Decorative leaf in corner */}
-              <div className="absolute -top-4 -right-4 text-green-600 opacity-10 w-20 h-20 pointer-events-none">
-                <SmallLeaf />
-              </div>
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50">
+            <div className="bg-white/90 backdrop-blur-sm rounded-xl shadow-lg w-[95%] sm:max-w-lg relative">
+              <div className="p-4 sm:p-6">
+                {!showDoctors ? (
+                  <>
+                    <div className="flex justify-between items-start mb-4">
+                      <h2 className="text-xl font-bold text-gray-900">
+                        Analysis Results
+                      </h2>
+                      <button
+                        onClick={() => setShowResult(false)}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <svg
+                          className="w-6 h-6"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
 
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <h2 className="text-xl font-bold text-gray-900">
-                    Analysis Results
-                  </h2>
-                  <button
-                    onClick={() => setShowResult(false)}
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    <svg
-                      className="w-6 h-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-sm text-gray-500">
+                          Patient Information
+                        </p>
+                        <div className="grid grid-cols-2 gap-4 mt-2">
+                          <div>
+                            <p className="text-sm font-medium text-gray-700">
+                              Name
+                            </p>
+                            <p className="text-gray-900">{formData.name}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-700">
+                              Age
+                            </p>
+                            <p className="text-gray-900">{formData.age}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-700">
+                              Location
+                            </p>
+                            <p className="text-gray-900">{formData.location}</p>
+                          </div>
+                        </div>
+                      </div>
 
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-gray-500">Patient Information</p>
-                    <div className="grid grid-cols-2 gap-4 mt-2">
                       <div>
-                        <p className="text-sm font-medium text-gray-700">
-                          Name
-                        </p>
-                        <p className="text-gray-900">{formData.name}</p>
+                        <p className="text-sm text-gray-500">Health Concerns</p>
+                        <p className="text-gray-900 mt-1">{formData.issues}</p>
                       </div>
+
                       <div>
-                        <p className="text-sm font-medium text-gray-700">Age</p>
-                        <p className="text-gray-900">{formData.age}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-700">
-                          Location
+                        <p className="text-sm text-gray-500">
+                          Recommended Approach
                         </p>
-                        <p className="text-gray-900">{formData.location}</p>
+                        <div className="bg-green-50 rounded-lg p-4 mt-2">
+                          <p className="text-gray-800">
+                            {
+                              randomMessages[
+                                Math.floor(
+                                  Math.random() * randomMessages.length
+                                )
+                              ]
+                            }
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div>
-                    <p className="text-sm text-gray-500">Health Concerns</p>
-                    <p className="text-gray-900 mt-1">{formData.issues}</p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-500">
-                      Recommended Approach
-                    </p>
-                    <div className="bg-green-50 rounded-lg p-4 mt-2">
-                      <p className="text-gray-800">
-                        {
-                          randomMessages[
-                            Math.floor(Math.random() * randomMessages.length)
-                          ]
-                        }
-                      </p>
+                    <div className="mt-6 flex justify-end gap-3">
+                      <button
+                        onClick={findNearbyDoctors}
+                        disabled={loadingDoctors}
+                        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {loadingDoctors ? (
+                          <>
+                            <svg
+                              className="animate-spin h-5 w-5"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              />
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              />
+                            </svg>
+                            <span>Finding...</span>
+                          </>
+                        ) : (
+                          <>
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                              />
+                            </svg>
+                            <span>Find Doctors</span>
+                          </>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => setShowResult(false)}
+                        className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                      >
+                        Close
+                      </button>
                     </div>
-                  </div>
-                </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex justify-between items-start mb-4">
+                      <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+                        Nearby Ayurvedic Centers
+                      </h2>
+                      <button
+                        onClick={() => setShowDoctors(false)}
+                        className="text-gray-500 hover:text-gray-700 p-2"
+                      >
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
 
-                <div className="mt-6 flex justify-end">
-                  <button
-                    onClick={() => setShowResult(false)}
-                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
-                  >
-                    Close
-                  </button>
-                </div>
+                    <div className="space-y-3 mt-4 max-h-[60vh] overflow-y-auto">
+                      {doctors.length > 0 ? (
+                        doctors.map((doctor, index) => (
+                          <div
+                            key={index}
+                            className="bg-white rounded-lg p-3 shadow-sm border border-gray-100"
+                          >
+                            <div className="font-medium text-gray-900 text-sm sm:text-base">
+                              {doctor.name}
+                            </div>
+                            <div className="text-xs sm:text-sm text-gray-500 mt-1">
+                              {doctor.address}
+                            </div>
+                            <div className="flex justify-between items-center mt-2">
+                              <div className="text-xs sm:text-sm text-gray-400">
+                                ~{doctor.distance}km away • {doctor.type}
+                              </div>
+                              <button
+                                onClick={() => openInGoogleMaps(doctor.address)}
+                                className="text-blue-600 hover:text-blue-700 text-xs sm:text-sm flex items-center gap-1 py-1 px-2 rounded-md hover:bg-blue-50"
+                              >
+                                <svg
+                                  className="w-4 h-4"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                  />
+                                </svg>
+                                Navigate
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-8">
+                          <p className="text-gray-500 text-sm sm:text-base">
+                            No healthcare facilities found in this area
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="mt-4 border-t pt-4">
+                      <button
+                        onClick={() => setShowDoctors(false)}
+                        className="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm sm:text-base"
+                      >
+                        Back to Results
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>

@@ -1,3 +1,4 @@
 sanic
 pandas
 sentence-transformers
+sanic-cors
