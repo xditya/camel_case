@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Leaf1, Leaf2, SmallLeaf } from "@/components/leaves";
 import Image from "next/image";
+import { BackButton } from "@/components/back-button";
 
 interface YogaResult {
   problem: string;
@@ -64,6 +65,7 @@ export default function YogaTherapies() {
       </div>
 
       <main className="max-w-4xl mx-auto px-4 py-8 relative">
+        <BackButton href="/get-started" />
         {/* Header Section */}
         <div className="text-center mb-12">
           <div className="flex justify-center mb-8">

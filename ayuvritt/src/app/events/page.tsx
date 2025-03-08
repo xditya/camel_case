@@ -2,6 +2,7 @@
 
 import { Leaf1, Leaf2, SmallLeaf } from "@/components/leaves";
 import Image from "next/image";
+import { BackButton } from "@/components/back-button";
 
 interface Event {
   id: string;
@@ -136,6 +137,7 @@ export default function EventsPage() {
       </div>
 
       <main className="max-w-4xl mx-auto px-4 py-8 relative">
+        <BackButton href="/get-started" />
         <div className="text-center mb-12">
           <div className="flex justify-center mb-8">
             <Image

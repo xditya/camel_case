@@ -124,6 +124,30 @@ export default function GetStarted() {
         </svg>
       ),
     },
+    {
+      title: "Naturopathy",
+      description: "Purity the inner self",
+      link: "/naturopathy",
+      icon: (
+        <svg
+          className="w-6 h-6 text-emerald-600"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M12 22V12" />
+          <path d="M12 12c0-4 3-6 6-6-1 4-3 6-6 6z" />
+          <path d="M12 12c0-4-3-6-6-6 1 4 3 6 6 6z" />
+          <path d="M12 8c0-3 2-5 5-5-.5 3-2 5-5 5z" />
+          <path d="M12 8c0-3-2-5-5-5 .5 3 2 5 5 5z" />
+          <path d="M12 22c1-2 4-3 6-2" />
+          <path d="M12 22c-1-2-4-3-6-2" />
+        </svg>
+      ),
+    },
   ];
 
   return (

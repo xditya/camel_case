@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Leaf1, Leaf2 } from "@/components/leaves";
+import { BackButton } from "@/components/back-button";
 
 interface LocationResult {
   display_name: string;
@@ -352,6 +353,7 @@ export default function Start() {
       </div>
 
       <main className="max-w-2xl mx-auto px-4 py-16 relative z-10">
+        <BackButton href="/get-started" />
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <Image

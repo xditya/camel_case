@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Leaf1, Leaf2, SmallLeaf } from "@/components/leaves";
 import Image from "next/image";
+import { BackButton } from "@/components/back-button";
 
 export default function MedicineInformation() {
   const [query, setQuery] = useState("");
@@ -53,8 +54,11 @@ export default function MedicineInformation() {
         </div>
       </div>
 
-      <main className="max-w-4xl mx-auto px-4 py-12 relative z-10">
-        <div className="text-center mb-12">
+      <main className="max-w-4xl mx-auto px-4 py-8 relative">
+        <div className="text-center mb-12 relative">
+          <div className="absolute left-0 top-1/2 -translate-y-1/2">
+            <BackButton href="/get-started" />
+          </div>
           <div className="flex justify-center mb-8">
             <Image
               src="/name.png"
