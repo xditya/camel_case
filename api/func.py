@@ -93,3 +93,41 @@ def get_meditation(input_text):
     Instructions = dataset2["Instructions"][best_match_index]
 
     return best_match, Meditate, Description, Duration, Instructions
+
+
+
+data3 = pd.read_csv('sanskrit_translated_output_1.csv')
+dataset3 = pd.DataFrame(data)
+keywords3 = dataset["Name of Medicine"].tolist()
+
+def get_ocr(request):
+    reader = easyocr.Reader(['en'])
+    data = request.json
+    if 'image' not in request.files:
+        raise InvalidUsage("No image file provided.")
+    base64_image = data['image']
+    image_data = base64.b64decode(base64_image)
+    image = Image.open(io.BytesIO(image_data))
+
+        # Read the image file into a PIL Image object
+    image = Image.open(io.BytesIO(image_file.body))
+    
+        # Convert the image to RGB (if necessary)
+    if image.mode != 'RGB':
+        image = image.convert('RGB')
+    image_np = np.array(image)
+    results = reader.readtext(image_np)
+    extracted_text = " ".join([result[1] for result in results])
+    input_embedding = model.encode(text, convert_to_tensor=True)
+    keyword_embeddings = model.encode(keywords, convert_to_tensor=True)
+    similarities = util.pytorch_cos_sim(input_embedding, keyword_embeddings)
+    best_match_index = similarities.argmax().item()
+    best_match = keywords3[best_match_index]
+    recognized_medicines = best_match
+    Recognized Medicines = recognized_medicines
+    Indications =  dataset3["Translation"][best_match_index]
+    Dose = dataset3["Dose"][best_match_index]
+    Precautions = dataset3["Precaution/ Contraindication"][best_match_index]
+
+    return recognized_medicines,Indications,Dose,Precautions
+
