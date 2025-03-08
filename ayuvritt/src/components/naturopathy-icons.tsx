@@ -122,3 +122,32 @@ export function GrowingTreeIcon({
     </svg>
   );
 }
+
+export function PrescriptionIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      {/* Paper */}
+      <path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+
+      {/* Top lines */}
+      <path d="M8 7h8" />
+      <path d="M8 10h8" />
+
+      {/* Rx Symbol */}
+      <path d="M8 14h2l1-1" />
+      <path d="M8 13l3 3" />
+
+      {/* Bottom lines */}
+      <path d="M13 14h3" />
+      <path d="M8 17h8" />
+    </svg>
+  );
+}

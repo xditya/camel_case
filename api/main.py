@@ -1,6 +1,6 @@
 from sanic import Sanic, json, redirect
 from sanic.response import text
-from func import get_best_match, search_chunks, get_asanas, get_meditation
+from func import get_best_match, get_ocr, search_chunks, get_asanas, get_meditation
 from sanic_cors import CORS
 
 app = Sanic("AyuVritt")
@@ -78,6 +78,21 @@ async def get_meditationz(request):
             },
             status=500,
         )
+
+
+@app.post("/prescriptionAnalysis")
+async def get_prescription(request):
+    recognized_medicines, Indications, Dose, Precautions = get_ocr(request)
+    return json(
+        {
+            "error": None,
+            "recognized_medicines": recognized_medicines,
+            "Indications": Indications,
+            "Dose": Dose,
+            "Precautions": Precautions,
+        },
+        status=200,
+    )
 
 
 if __name__ == "__main__":

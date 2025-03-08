@@ -3,6 +3,10 @@ from sentence_transformers import SentenceTransformer, util
 import pandas as pd
 import faiss
 import numpy as np
+import easyocr
+import io
+from PIL import Image
+
 
 # Suppress the specific FutureWarning
 warnings.filterwarnings(
@@ -95,39 +99,41 @@ def get_meditation(input_text):
     return best_match, Meditate, Description, Duration, Instructions
 
 
-
-data3 = pd.read_csv('sanskrit_translated_output_1.csv')
+data3 = pd.read_csv("datasets/Formulation-Indications - Formulation-Indications.csv")
 dataset3 = pd.DataFrame(data)
 keywords3 = dataset["Name of Medicine"].tolist()
 
+
 def get_ocr(request):
-    reader = easyocr.Reader(['en'])
-    data = request.json
-    if 'image' not in request.files:
-        raise InvalidUsage("No image file provided.")
-    base64_image = data['image']
-    image_data = base64.b64decode(base64_image)
+    reader = easyocr.Reader(["en"])
+
+    if "image" not in request.files:
+        return None, None, None, None
+
+    image_file = request.files.get("image")  # Get the first file
+    if not image_file:
+        return None, None, None, None
+
+    # Read the file data
+    image_data = image_file.body
     image = Image.open(io.BytesIO(image_data))
 
-        # Read the image file into a PIL Image object
-    image = Image.open(io.BytesIO(image_file.body))
-    
-        # Convert the image to RGB (if necessary)
-    if image.mode != 'RGB':
-        image = image.convert('RGB')
+    # Convert the image to RGB (if necessary)
+    if image.mode != "RGB":
+        image = image.convert("RGB")
+
     image_np = np.array(image)
     results = reader.readtext(image_np)
     extracted_text = " ".join([result[1] for result in results])
-    input_embedding = model.encode(text, convert_to_tensor=True)
+
+    input_embedding = model.encode(extracted_text, convert_to_tensor=True)
     keyword_embeddings = model.encode(keywords, convert_to_tensor=True)
     similarities = util.pytorch_cos_sim(input_embedding, keyword_embeddings)
     best_match_index = similarities.argmax().item()
     best_match = keywords3[best_match_index]
     recognized_medicines = best_match
-    Recognized Medicines = recognized_medicines
-    Indications =  dataset3["Translation"][best_match_index]
+    Indications = dataset3["Translated"][best_match_index]
     Dose = dataset3["Dose"][best_match_index]
     Precautions = dataset3["Precaution/ Contraindication"][best_match_index]
 
-    return recognized_medicines,Indications,Dose,Precautions
-
+    return recognized_medicines, Indications, Dose, Precautions

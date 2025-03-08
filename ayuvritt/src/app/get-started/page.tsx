@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Leaf1, Leaf2, Leaf3, SmallLeaf } from "@/components/leaves";
 import { JSX } from "react";
 import Image from "next/image";
-import { PlantIcon } from "@/components/naturopathy-icons";
+import { PlantIcon, PrescriptionIcon } from "@/components/naturopathy-icons";
 
 interface FeatureCard {
   title: string;
@@ -157,6 +157,12 @@ export default function GetStarted() {
       description: "Focusing on chakras",
       link: "/rising-tree",
       icon: <PlantIcon className="w-6 h-6 text-emerald-600" />,
+    },
+    {
+      title: "Prescription Analysis",
+      description: "Analysing hand written prescriptions",
+      link: "/prescription-analysis",
+      icon: <PrescriptionIcon className="w-6 h-6 text-emerald-600" />,
     },
   ];
 
