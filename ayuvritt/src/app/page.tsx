@@ -51,7 +51,7 @@ export default function Home() {
           </p>
           <div className="flex gap-4 justify-center">
             <button
-              onClick={() => router.push("/start")}
+              onClick={() => router.push("/get-started")}
               className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
             >
               Get Started
@@ -171,7 +171,7 @@ export default function Home() {
             ancient wisdom and modern healing.
           </p>
           <button
-            onClick={() => router.push("/start")}
+            onClick={() => router.push("/get-started")}
             className="px-8 py-3 bg-white text-green-900 rounded-lg hover:bg-green-50 transition"
           >
             Start Your Journey
