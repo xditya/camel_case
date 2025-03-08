@@ -37,3 +37,32 @@ export function ChecklistIcon() {
     </svg>
   );
 }
+
+export function PlantIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      {/* Pot */}
+      <path d="M7 19h10" />
+      <path d="M7 19L5 13h14l-2 6" />
+
+      {/* Main stem */}
+      <path d="M12 13V6" />
+
+      {/* Leaves */}
+      <path d="M12 6s-3-3-3 0 3 3 3 0" />
+      <path d="M12 6s3-3 3 0-3 3-3 0" />
+
+      {/* Lower leaves */}
+      <path d="M12 10s-2-2-2 0 2 2 2 0" />
+      <path d="M12 10s2-2 2 0-2 2-2 0" />
+    </svg>
+  );
+}
