@@ -12,10 +12,10 @@ warnings.filterwarnings(
 )
 
 model = SentenceTransformer("paraphrase-MiniLM-L6-v2")
-data = pd.read_csv("datasets/sanskrit_translated_output_1.csv")
+data = pd.read_csv("datasets/Formulation-Indications - Formulation-Indications.csv")
 dataset = pd.DataFrame(data)
 
-keywords = dataset["English_Text"].tolist()
+keywords = dataset["Translated"].tolist()
 
 
 def get_best_match(input_text):
@@ -51,17 +51,18 @@ def search_chunks(query, top_k=5):
     else:
         return "No results found"
 
+
 data1 = pd.read_csv("datasets/asanas.csv")
 dataset1 = pd.DataFrame(data1)
 keywords1 = dataset1["Problems Solved"].tolist()
+
+
 def get_asanas(input_text):
     input_embedding = model.encode(input_text, convert_to_tensor=True)
     keyword_embeddings = model.encode(keywords, convert_to_tensor=True)
-    
-   
+
     similarities = util.pytorch_cos_sim(input_embedding, keyword_embeddings)
-    
-   
+
     best_match_index = similarities.argmax().item()
     best_match = keywords[best_match_index]
     asana = dataset1["AName"][best_match_index]
@@ -69,9 +70,5 @@ def get_asanas(input_text):
     technique = dataset1["Description"][best_match_index]
     breathing = dataset1["Breathing"][best_match_index]
     Level = dataset1["Level"][best_match_index]
-    
-    return best_match, asana,benefits,techique,breathing,Level
 
-
-
-
+    return best_match, asana, benefits, technique, breathing, Level

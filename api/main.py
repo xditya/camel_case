@@ -1,7 +1,6 @@
 from sanic import Sanic, json, redirect
 from sanic.response import text
 from func import get_best_match, search_chunks, get_asanas
-from func import get_best_match
 from sanic_cors import CORS
 
 app = Sanic("AyuVritt")
@@ -31,14 +30,27 @@ async def get_query(request):
     return json({"error": None, "description": description}, status=200)
 
 
-@app.get("/YogaSearch")
+@app.get("/yogaSearch")
 async def get_yoga(request):
-
     problem = request.args.get("problem")
     if not problem:
         return json({"error": "Joint Symptoms are required"}, status=400)
-    problem, asana,benefits,techique,breathing,Level = get_asanas(problem)
-    return json({"error": None, "problem": problem,"asana":asana,"benefits":benefits,"technique":technique,"breathing":breathing,"Level": Level}, status=200)
+    try:
+        problem, asana, benefits, technique, breathing, Level = get_asanas(problem)
+        return json(
+            {
+                "error": None,
+                "problem": str(problem).strip(),
+                "asana": str(asana).strip(),
+                "benefits": str(benefits).strip(),
+                "technique": str(technique).strip(),
+                "breathing": str(breathing).strip(),
+                "Level": str(Level).strip(),
+            },
+            status=200,
+        )
+    except Exception as e:
+        return json({"error": f"Failed to get yoga information: {str(e)}"}, status=500)
 
 
 if __name__ == "__main__":
