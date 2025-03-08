@@ -1,72 +1,83 @@
-
 # Define 3.0
+
 The official template repository for Define 3.0
 
 ![DefineHack 2025 Logo](https://github.com/user-attachments/assets/8173bc16-418e-4912-b500-c6427e4ba4b6)
 
+# AyuVritt
 
+> _AI driven bridging gap between ancient wisdom and modern healing._
 
-# < Project Name >
- Cover Image  If applicable
+Cover Image If applicable
 
 ### Team Information
-- **Team Name**: <Team Name> 
+
+- **Team Name**: <Team Name>
 - **Track**: < Track >
 
 ### Team Members
-| Name | Role | GitHub | LinkedIn |
-|------|------|--------|----------|
-| [Full Name] | [Role] | [@username](https://github.com/username) | [Profile](https://linkedin.com/in/username) |
-| [Full Name] | [Role] | [@username](https://github.com/username) | [Profile](https://linkedin.com/in/username) |
-| [Full Name] | [Role] | [@username](https://github.com/username) | [Profile](https://linkedin.com/in/username) |
-| [Full Name] | [Role] | [@username](https://github.com/username) | [Profile](https://linkedin.com/in/username) |
+
+| Name            | Role      | GitHub                                             | LinkedIn                                                     |
+| --------------- | --------- | -------------------------------------------------- | ------------------------------------------------------------ |
+| Aditya S        | Developer | [@xditya](https://github.com/xditya)               | [Profile](https://linkedin.com/in/xditya)                    |
+| Akshay Ashok    | Developer | [@username](https://github.com/username)           | [Profile](https://linkedin.com/in/akshay-ashok-26844224a)    |
+| Ann S Binil     | Developer | [@annsbinil](https://github.com/annsbinil)         | [Profile](https://linkedin.com/in/annsbinil)                 |
+| Anoushka L Nair | Developer | [@anoushkalnair](https://github.com/anoushkalnair) | [Profile](https://linkedin.com/in/anoushka-l-nair-331b73239) |
 
 ## Project Details
 
 ### Overview
-_A concise summary of your project (2-3 sentences)_
+
+_We aim to develop an intelligent platform that combines Ayurvedic insights with allopathic analysis to create sustainable AYUSH-based formulations. By validating efficiency and side effects scientifically, the system will enhance the credibility and effectiveness of traditional medicine._
 
 ### Problem Statement
-_Describe the problem your project aims to solve_
+
+_We require a system to generate medicinal knowledge and ayurvedic insights related to allopathy, aiding in the sustainable formulation of AYUSH-based medicine to enhance efficiency and validate it scientifically with proper assessment of side effects._
 
 ### Solution
+
 _Explain your approach to solving the problem_
 
 ### Demo
-[![Project Demo](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=VIDEO_ID)
+
+[![Project Demo](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 _Replace VIDEO_ID with your YouTube video ID or provide an alternative demo link_
 
 ### Live Project
-[Project Name](https://your-project-url.com)
+
+[AyuVritt](https://your-project-url.com)
 
 ## Technical Implementation
 
 ### Technologies Used
-- **Frontend**: [Technologies]
-- **Backend**: [Technologies]
-- **Database**: [Technologies]
-- **APIs**: [Technologies]
-- **DevOps**: [Technologies]
-- **Other Tools**: [Technologies]
+
+- **Frontend**: Next.js
+- **Backend**: Node.js
+- **Database**: MongoDB
+- **Other Tools**: Pretrained models (Bert, Kaggle)
 
 ### Key Features
-- Feature 1
-- Feature 2
-- Feature 3
+
+- Medicine formulation analysis.
+- Ayurvedic insights connected with allopathic medicine.
+- Side effects analysis.
 
 ## Setup Instructions
 
 ### Prerequisites
+
 - Requirement 1
 - Requirement 2
 - Requirement 3
 
-### Installation 
+### Installation
+
 ```bash
 
 ```
 
 ### Running the Project
+
 ```bash
 
 ```
@@ -74,25 +85,31 @@ _Replace VIDEO_ID with your YouTube video ID or provide an alternative demo link
 ## Additional Resources
 
 ### Project Timeline
+
 _Brief overview of your development process and milestones_
 
 ### Challenges Faced
+
 _Discuss technical challenges and how you overcame them_
 
 ### Future Enhancements
+
 _Share your vision for future development_
 
 ### References (if any)
+
 - [Reference 1](link)
 - [Reference 2](link)
 
 ---
 
 ### Submission Checklist
+
+- [ ] Cover Image
 - [ ] Completed all sections of this README
 - [ ] Added project demo video
 - [ ] Provided live project link
-- [ ] Ensured all team members are listed
+- [x] Ensured all team members are listed
 - [ ] Included setup instructions
 - [ ] Submitted final code to repository
 
