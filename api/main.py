@@ -1,3 +1,4 @@
+import os
 from sanic import Sanic, json, redirect
 from sanic.response import text
 from func import get_best_match, get_ocr, search_chunks, get_asanas, get_meditation
@@ -95,5 +96,7 @@ async def get_prescription(request):
     )
 
 
+port = os.getenv("PORT", 8000)
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=port)

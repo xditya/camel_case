@@ -292,7 +292,7 @@ export default function LearnMore() {
             </p>
             <button
               onClick={() => {
-                window.location.href = "/start";
+                window.location.href = "/get-started";
               }}
               className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
             >
