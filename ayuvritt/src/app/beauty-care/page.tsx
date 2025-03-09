@@ -82,10 +82,10 @@ export default function SkinCarePage() {
             />
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Natural Skin Care
+            Natural Beauty Care
           </h1>
           <p className="text-gray-600 text-lg">
-            Search for natural remedies and ingredients for skin care
+            Search for natural remedies and ingredients for beauty care
           </p>
         </div>
 

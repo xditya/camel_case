@@ -48,10 +48,34 @@ keywords0 = dataset0["Heading"].tolist()
 
 # Function to search for relevant chunks
 def search_chunks(query):
+    # Encode the query
     query_embedding = model1.encode([query])
-    keyword_embeddings = model.encode(keywords1, convert_to_tensor=True)
-    similarities = util.pytorch_cos_sim(query_embedding, keyword_embeddings)
-    best_match_index = similarities.argmax().item()
+    # Encode all keywords
+    keyword_embeddings = model.encode(keywords0, convert_to_tensor=True)
+
+    # Calculate similarities
+    similarities = util.pytorch_cos_sim(query_embedding, keyword_embeddings)[
+        0
+    ]  # Get first row
+
+    # Get top 3 most similar matches
+    top_k = min(3, len(similarities))
+    top_indices = similarities.argsort(descending=True)[:top_k]
+
+    # Find best match with similarity threshold
+    best_match_index = None
+    best_similarity = 0
+
+    for idx in top_indices:
+        similarity = similarities[idx].item()
+        if similarity > 0.5:  # Minimum similarity threshold
+            if similarity > best_similarity:
+                best_similarity = similarity
+                best_match_index = int(idx)  # Convert tensor to int
+
+    if best_match_index is None:
+        return "No relevant information found.", "Search Results"
+
     best_match = keywords0[best_match_index]
     content = dataset0["Content"][best_match_index]
 

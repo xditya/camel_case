@@ -169,9 +169,9 @@ export default function GetStarted() {
       icon: <PrescriptionIcon className="w-6 h-6 text-emerald-600" />,
     },
     {
-      title: "Skin Care",
-      description: "Ayurvedic skin care tips",
-      link: "/skin-care",
+      title: "Beauty Care",
+      description: "Ayurvedic beauty care tips",
+      link: "/beauty-care",
       icon: <SkincareIcon className="w-6 h-6 text-emerald-600" />,
     },
   ];
