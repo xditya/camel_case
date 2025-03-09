@@ -4,7 +4,11 @@ import { useRouter } from "next/navigation";
 import { Leaf1, Leaf2, Leaf3, SmallLeaf } from "@/components/leaves";
 import { JSX } from "react";
 import Image from "next/image";
-import { PlantIcon, PrescriptionIcon } from "@/components/naturopathy-icons";
+import {
+  PlantIcon,
+  PrescriptionIcon,
+  SkincareIcon,
+} from "@/components/naturopathy-icons";
 
 interface FeatureCard {
   title: string;
@@ -163,6 +167,12 @@ export default function GetStarted() {
       description: "Analysing hand written prescriptions",
       link: "/prescription-analysis",
       icon: <PrescriptionIcon className="w-6 h-6 text-emerald-600" />,
+    },
+    {
+      title: "Skin Care",
+      description: "Ayurvedic skin care tips",
+      link: "/skin-care",
+      icon: <SkincareIcon className="w-6 h-6 text-emerald-600" />,
     },
   ];
 

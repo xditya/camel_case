@@ -6,11 +6,12 @@ import Image from "next/image";
 import { BackButton } from "@/components/back-button";
 
 interface SearchResult {
-  heading: string;
-  description: string;
+  issue: string;
+  ingredient: string;
+  benefit: string;
 }
 
-export default function MedicineInformation() {
+export default function SkinCarePage() {
   const [query, setQuery] = useState("");
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
   const [loading, setLoading] = useState(false);
@@ -25,7 +26,7 @@ export default function MedicineInformation() {
       const response = await fetch(
         `${
           process.env.NEXT_PUBLIC_API_URL
-        }/medicineSearch?query=${encodeURIComponent(query)}`
+        }/beautyCare?bissue=${encodeURIComponent(query)}`
       );
       const data = await response.json();
 
@@ -34,12 +35,13 @@ export default function MedicineInformation() {
         setSearchResult(null);
       } else {
         setSearchResult({
-          heading: data.heading,
-          description: data.description,
+          issue: data.issue,
+          ingredient: data.Ingridient,
+          benefit: data.benefit,
         });
       }
     } catch (err) {
-      setError("Failed to fetch medicine information. Please try again." + err);
+      setError("Failed to fetch skincare information. Please try again." + err);
       setSearchResult(null);
     } finally {
       setLoading(false);
@@ -79,22 +81,22 @@ export default function MedicineInformation() {
             />
           </div>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Medicine Information
+            Natural Skin Care
           </h1>
           <p className="text-gray-600 text-lg">
-            Search for detailed information about Ayurvedic medicines
+            Search for natural remedies and ingredients for skin care
           </p>
         </div>
 
         {/* Search Section */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8 ">
+        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
           <div className="flex gap-4">
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              placeholder="Enter medicine name..."
+              placeholder="Enter skin concern..."
               className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-black"
             />
             <button
@@ -118,10 +120,23 @@ export default function MedicineInformation() {
           <div className="bg-white rounded-xl shadow-md p-6 mb-8">
             <div className="prose max-w-none">
               <h2 className="text-2xl font-semibold mb-4 text-black">
-                {searchResult.heading}
+                {searchResult.issue}
               </h2>
-              <div className="text-gray-700 whitespace-pre-wrap">
-                {searchResult.description}
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-medium text-black mb-2">
+                    Recommended Ingredients
+                  </h3>
+                  <p className="text-gray-700">{searchResult.ingredient}</p>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium text-black mb-2">
+                    Benefits
+                  </h3>
+                  <p className="text-gray-700 whitespace-pre-wrap">
+                    {searchResult.benefit}
+                  </p>
+                </div>
               </div>
             </div>
           </div>

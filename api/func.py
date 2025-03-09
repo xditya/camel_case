@@ -41,23 +41,21 @@ model1 = SentenceTransformer("all-MiniLM-L6-v2")
 # Load the chunked data
 df = pd.read_csv("datasets/chunked_data.csv")
 
-data0 = pd.read_csv("datasets/asanas.csv")
-dataset0 = pd.DataFrame(data1)
+data0 = pd.read_csv("datasets/chunked.csv")
+dataset0 = pd.DataFrame(data0)
 keywords0 = dataset0["Heading"].tolist()
+
 
 # Function to search for relevant chunks
 def search_chunks(query):
     query_embedding = model1.encode([query])
     keyword_embeddings = model.encode(keywords1, convert_to_tensor=True)
-    similarities = util.pytorch_cos_sim(input_embedding, keyword_embeddings)
+    similarities = util.pytorch_cos_sim(query_embedding, keyword_embeddings)
     best_match_index = similarities.argmax().item()
     best_match = keywords0[best_match_index]
     content = dataset0["Content"][best_match_index]
 
-    return content,best_match
-
-
-    
+    return content, best_match
 
 
 data1 = pd.read_csv("datasets/asanas.csv")
@@ -143,9 +141,11 @@ def get_ocr(request):
     return recognized_medicines, Indications, Dose, Precautions
 
 
-data5 = pd.read_csv("datasets/skincare.csv")
+data5 = pd.read_csv("datasets/care.csv")
 dataset5 = pd.DataFrame(data5)
 keywords5 = dataset5["Issue"].tolist()
+
+
 def get_skincare(input_text):
     input_embedding = model.encode(input_text, convert_to_tensor=True)
     keyword_embeddings = model.encode(keywords5, convert_to_tensor=True)
@@ -156,11 +156,5 @@ def get_skincare(input_text):
     issue = keywords5[best_match_index]
     Ingredient = dataset5["Ingredient(s)"][best_match_index]
     Benefits = dataset5["Benefits"][best_match_index]
-    
 
-    return issue,Ingredient,Benefit
-
-
-
-
-
+    return issue, Ingredient, Benefits

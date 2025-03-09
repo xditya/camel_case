@@ -151,3 +151,29 @@ export function PrescriptionIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+export function SkincareIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      {/* Bottle */}
+      <path d="M12 3v2" />
+      <path d="M9 5h6" />
+      <path d="M8 8h8l-1 11H9L8 8z" />
+
+      {/* Decorative drops */}
+      <path d="M11 11s-1 1-1 2 1 2 1 2" />
+      <path d="M13 14s1-1 1-2-1-2-1-2" />
+
+      {/* Circular cap */}
+      <circle cx="12" cy="4" r="1" />
+    </svg>
+  );
+}

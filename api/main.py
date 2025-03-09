@@ -1,7 +1,14 @@
 import os
 from sanic import Sanic, json, redirect
 from sanic.response import text
-from func import get_best_match, get_ocr, search_chunks, get_asanas, get_meditation,get_skincare
+from func import (
+    get_best_match,
+    get_ocr,
+    search_chunks,
+    get_asanas,
+    get_meditation,
+    get_skincare,
+)
 from sanic_cors import CORS
 
 app = Sanic("AyuVritt")
@@ -27,8 +34,10 @@ async def get_query(request):
     query = request.args.get("query")
     if not query:
         return json({"error": "Medicine name is required"}, status=400)
-    description,heading = search_chunks(query)
-    return json({"error": None, "description": description,"Heading": heading}, status=200)
+    description, heading = search_chunks(query)
+    return json(
+        {"error": None, "description": description, "heading": heading}, status=200
+    )
 
 
 @app.get("/yogaSearch")
@@ -96,13 +105,13 @@ async def get_prescription(request):
     )
 
 
-@app.get("/BeautyCare")
+@app.get("/beautyCare")
 async def get_beautycare(request):
     bissue = request.args.get("bissue")
-    if not issue:
+    if not bissue:
         return json({"error": "Beauty Problems are required"}, status=400)
     try:
-        bissue, ingredient, benefit = get_skincare(issue)
+        bissue, ingredient, benefit = get_skincare(bissue)
         return json(
             {
                 "error": None,
@@ -119,7 +128,6 @@ async def get_beautycare(request):
             },
             status=500,
         )
-    
 
 
 port = os.getenv("PORT", 8000)
