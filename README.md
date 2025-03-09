@@ -40,12 +40,11 @@ _We intend to build a interface for herbal formulation insights alongside of all
 
 ### Demo
 
-[![Project Demo](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
-_Replace VIDEO_ID with your YouTube video ID or provide an alternative demo link_
+[![Project Demo](https://img.youtube.com/vi/9MlfyAhO9PA/0.jpg)](https://www.youtube.com/watch?v=9MlfyAhO9PA)
 
 ### Live Project
 
-[AyuVritt](https://your-project-url.com)
+[AyuVritt](https://camel-case.vercel.app/)
 
 ## Technical Implementation
 
@@ -120,12 +119,12 @@ _Customised fine tuned datasets for better results_
 ### Submission Checklist
 
 - [x] Cover Image
-- [ ] Completed all sections of this README
-- [ ] Added project demo video
-- [ ] Provided live project link
+- [x] Completed all sections of this README
+- [x] Added project demo video
+- [x] Provided live project link
 - [x] Ensured all team members are listed
 - [x] Included setup instructions
-- [ ] Submitted final code to repository
+- [x] Submitted final code to repository
 
 ---
 
