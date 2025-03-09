@@ -4,6 +4,7 @@ import { BackButton } from "@/components/back-button";
 import { Leaf1, Leaf2 } from "@/components/leaves";
 import Image from "next/image";
 import { useState } from "react";
+import { SearchBar } from "@/components/search-bar";
 
 interface MeditationResponse {
   error: null | string;
@@ -23,22 +24,22 @@ interface MeditationResult {
 }
 
 export default function MeditationPage() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<MeditationResult[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
+    if (!query.trim()) return;
 
-    setIsLoading(true);
+    setLoading(true);
     setError("");
 
     try {
       const response = await fetch(
         `${
           process.env.NEXT_PUBLIC_API_URL
-        }/meditationSearch?issue=${encodeURIComponent(searchQuery)}`
+        }/meditationSearch?issue=${encodeURIComponent(query)}`
       );
 
       if (!response.ok) {
@@ -65,7 +66,7 @@ export default function MeditationPage() {
       setError("Failed to fetch recommendations. Please try again.");
       console.error("Search error:", err);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -107,26 +108,13 @@ export default function MeditationPage() {
           </p>
         </div>
 
-        {/* Search Section */}
-        <div className="max-w-2xl mx-auto mb-12">
-          <div className="flex gap-4">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-              placeholder="Enter your concern (e.g., stress, anxiety, focus)"
-              className="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-black"
-            />
-            <button
-              onClick={handleSearch}
-              disabled={isLoading}
-              className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:bg-emerald-400"
-            >
-              {isLoading ? "Searching..." : "Search"}
-            </button>
-          </div>
-        </div>
+        <SearchBar
+          query={query}
+          setQuery={setQuery}
+          handleSearch={handleSearch}
+          loading={loading}
+          placeholder="Enter meditation concern..."
+        />
 
         {/* Results Section */}
         {error && <div className="text-red-600 text-center mb-8">{error}</div>}
@@ -186,7 +174,7 @@ export default function MeditationPage() {
         )}
 
         {/* Initial Info Section */}
-        {!searchResults.length && !isLoading && (
+        {!searchResults.length && !loading && (
           <div className="bg-white rounded-xl p-8 shadow-sm">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
               Getting Started with Meditation

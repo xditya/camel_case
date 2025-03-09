@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Leaf1, Leaf2, SmallLeaf } from "@/components/leaves";
 import Image from "next/image";
 import { BackButton } from "@/components/back-button";
+import { SearchBar } from "@/components/search-bar";
 
 interface SearchResult {
   issue: string;
@@ -89,25 +90,13 @@ export default function SkinCarePage() {
         </div>
 
         {/* Search Section */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-          <div className="flex gap-4">
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              placeholder="Enter skin concern..."
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-black"
-            />
-            <button
-              onClick={handleSearch}
-              disabled={loading || !query.trim()}
-              className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:bg-green-400"
-            >
-              {loading ? "Searching..." : "Search"}
-            </button>
-          </div>
-        </div>
+        <SearchBar
+          query={query}
+          setQuery={setQuery}
+          handleSearch={handleSearch}
+          loading={loading}
+          placeholder="Enter skin concern..."
+        />
 
         {/* Results Section */}
         {error && (
