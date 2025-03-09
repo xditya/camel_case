@@ -1,39 +1,27 @@
-import { Metadata } from "next";
-import { geistMono, geistSans } from "./fonts";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
+import { Footer } from "@/components/footer";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AyuVritt - Bridging Ancient Wisdom with Modern Medicine",
-  description:
-    "An intelligent platform combining Ayurvedic insights with allopathic analysis for sustainable AYUSH-based formulations",
-  icons: {
-    icon: [
-      {
-        url: "/favicon.ico",
-        sizes: "any",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
-      },
-    ],
-    // apple: {
-    //   url: "/apple-touch-icon.png",
-    // },
-  },
+  title: "AyuVritt",
+  description: "Your Ayurvedic Health Companion",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={inter.className}>
+        <div className="flex flex-col min-h-screen">
+          <main className="flex-grow">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );
