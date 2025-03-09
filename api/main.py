@@ -11,10 +11,10 @@ from func import (
 )
 from sanic_cors import CORS
 
+Sanic.START_METHOD_SET = True
+
 app = Sanic("AyuVritt")
 CORS(app)
-
-Sanic.START_METHOD_SET = True
 
 
 @app.get("/")
