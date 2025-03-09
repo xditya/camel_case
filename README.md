@@ -98,7 +98,14 @@ npm run dev
 
 ### Project Timeline
 
-_Brief overview of your development process and milestones_
+| SL NO. | TIME               | WORK DONE                                                                                                                                                                                                                  |
+| ------ | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1      | 11:00 am - 1:00 pm | • Finalized the problem statement and completed initial analysis.<br>• Designed the product name and logo.<br>• Trained the model to translate local slang for medical symptoms.<br>• Developed the frontend landing page. |
+| 2      | 2:00 pm - 5:30pm   | • Developed and optimized website functionality.<br>• Cleaned and preprocessed datasets.<br>• Translated Sanskrit texts to English.                                                                                        |
+| 3      | 6:00 pm - 9:00 pm  | • Processed and modified datasets.<br>• Mapped yoga asanas to symptoms.                                                                                                                                                    |
+| 4      | 10:30 pm -12:30 am | • Designed naturopathy routines.<br>• Created a naturopathy bucket list.                                                                                                                                                   |
+| 5      | 1:00 am – 8:00 am  | • Hosting mindfulness events.<br>• Created "Rising Tree" for chakra focus.<br>• Integrated beauty and wellness practices.<br>• Mapped meditation techniques to symptoms.                                                   |
+| 6      | 8:45 am – 11:00 am | • Finalized the product.<br>• Held group discussions.<br>• Submitted related works.                                                                                                                                        |
 
 ### Challenges Faced
 
@@ -106,12 +113,7 @@ _Sleep deprivation_
 
 ### Future Enhancements
 
-_Share your vision for future development_
-
-### References (if any)
-
-- [Reference 1](link)
-- [Reference 2](link)
+_Customised fine tuned datasets for better results_
 
 ---
 

@@ -14,6 +14,8 @@ from sanic_cors import CORS
 app = Sanic("AyuVritt")
 CORS(app)
 
+Sanic.START_METHOD_SET = True
+
 
 @app.get("/")
 async def hello_world(request):
