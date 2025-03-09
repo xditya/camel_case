@@ -1,7 +1,7 @@
 import os
 from sanic import Sanic, json, redirect
 from sanic.response import text
-from func import get_best_match, get_ocr, search_chunks, get_asanas, get_meditation
+from func import get_best_match, get_ocr, search_chunks, get_asanas, get_meditation,get_skincare
 from sanic_cors import CORS
 
 app = Sanic("AyuVritt")
@@ -27,8 +27,8 @@ async def get_query(request):
     query = request.args.get("query")
     if not query:
         return json({"error": "Medicine name is required"}, status=400)
-    description = search_chunks(query)
-    return json({"error": None, "description": description}, status=200)
+    description,heading = search_chunks(query)
+    return json({"error": None, "description": description,"Heading": heading}, status=200)
 
 
 @app.get("/yogaSearch")
@@ -94,6 +94,32 @@ async def get_prescription(request):
         },
         status=200,
     )
+
+
+@app.get("/BeautyCare")
+async def get_beautycare(request):
+    bissue = request.args.get("bissue")
+    if not issue:
+        return json({"error": "Beauty Problems are required"}, status=400)
+    try:
+        bissue, ingredient, benefit = get_skincare(issue)
+        return json(
+            {
+                "error": None,
+                "issue": str(bissue).strip(),
+                "Ingridient": str(ingredient).strip(),
+                "benefit": str(benefit).strip(),
+            },
+            status=200,
+        )
+    except Exception as e:
+        return json(
+            {
+                "error": f"Failed to get information about the beauty care techniques: {str(e)}"
+            },
+            status=500,
+        )
+    
 
 
 port = os.getenv("PORT", 8000)
